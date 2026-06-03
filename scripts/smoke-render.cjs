@@ -4,6 +4,21 @@ const vm = require('vm');
 const root = { innerHTML: '' };
 const elements = { root };
 
+const html = fs.readFileSync('index.html', 'utf8');
+
+if (!html.includes('href="./src/styles.css"')) {
+  throw new Error('index.html must load the stylesheet with a relative path.');
+}
+
+if (!html.includes('defer src="./src/main.js"')) {
+  throw new Error('index.html must load the app script with a deferred relative path.');
+}
+
+if (html.includes('type="module"') || html.includes('src="/src/main.js"')) {
+  throw new Error('index.html must not use an absolute module script for the local startup path.');
+}
+
+
 const context = {
   console,
   Date,
